@@ -16,4 +16,6 @@ public class Card
     [StringLength(20, MinimumLength=1, ErrorMessage="Card name must be between 1-20 characters")]
     public string Name { get; set; }
     public CardRarity Rarity { get; set; }
+
+    public ICollection<User> Users { get; set; }
 }
