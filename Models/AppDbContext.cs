@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CardCollector_backend.Models;
 
-public class CardContext : DbContext
+public class AppDbContext : DbContext
 {
-    public CardContext(DbContextOptions<CardContext> options)
+    public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
     }

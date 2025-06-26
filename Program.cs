@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using CardCollector_backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Add services to the container.
 
@@ -13,7 +14,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<CardContext>(opt=> opt.UseInMemoryDatabase("CardList"));
+builder.Services.AddSqlite<AppDbContext>(connectionString);
 
 var app = builder.Build();
 

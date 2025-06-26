@@ -11,44 +11,35 @@ namespace CardCollector_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CardsController : ControllerBase
+    public class CardController : ControllerBase
     {
-        private readonly CardContext _context;
+        private readonly AppDbContext _context;
 
-        public CardsController(CardContext context)
+        public CardController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Cards
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Card>>> GetCards()
         {
             return await _context.Cards.ToListAsync();
         }
 
-        // GET: api/Cards/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Card>> GetCard(long id)
         {
             var card = await _context.Cards.FindAsync(id);
 
-            if (card == null)
-            {
-                return NotFound();
-            }
+            if (card == null){ return NotFound(); }
 
             return card;
         }
 
-        // PUT: api/Cards/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCard(long id, Card card)
         {
-            if (id != card.Id)
-            {
-                return BadRequest();
-            }
+            if (id != card.Id){ return BadRequest(); }
 
             _context.Entry(card).State = EntityState.Modified;
 
@@ -71,7 +62,6 @@ namespace CardCollector_backend.Controllers
             return NoContent();
         }
 
-        // POST: api/Cards
         [HttpPost]
         public async Task<ActionResult<Card>> PostCard(Card card)
         {
@@ -81,15 +71,11 @@ namespace CardCollector_backend.Controllers
             return CreatedAtAction(nameof(GetCard), new { id = card.Id }, card);
         }
 
-        // DELETE: api/Cards/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCard(long id)
         {
             var card = await _context.Cards.FindAsync(id);
-            if (card == null)
-            {
-                return NotFound();
-            }
+            if (card == null) { return NotFound(); }
 
             _context.Cards.Remove(card);
             await _context.SaveChangesAsync();
