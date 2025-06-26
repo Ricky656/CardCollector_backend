@@ -1,4 +1,6 @@
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using CardCollector_backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +13,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddDbContext<CardContext>(opt=> opt.UseInMemoryDatabase("CardList"));
 
 var app = builder.Build();
 
