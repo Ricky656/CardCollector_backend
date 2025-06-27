@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CardCollector_backend.Models;
+using CardCollector_backend.Dtos.Card;
+using CardCollector_backend.Mappers;
 
 namespace CardCollector_backend.Controllers
 {
@@ -21,25 +23,31 @@ namespace CardCollector_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Card>>> GetCards()
+        public async Task<ActionResult<IEnumerable<GetCardResponseDto>>> GetCards()
         {
-            return await _context.Cards.Include("UserCards").ToListAsync();
+            var cards = await _context.Cards.Include("UserCards").ToListAsync();
+            var cardDtos = cards.Select(s => s.ToGetDtoFromCard());
+
+            return Ok(cardDtos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Card>> GetCard(long id)
+        public async Task<ActionResult<GetCardResponseDto>> GetCard(long id)
         {
-            var card = await _context.Cards.FindAsync(id);
+            var card = await _context.Cards
+                .Include("UserCards")
+                .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (card == null){ return NotFound(); }
+            if (card == null) { return NotFound(); }
 
-            return card;
+            return card.ToGetDtoFromCard();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCard(long id, Card card)
+        public async Task<IActionResult> PutCard(long id, UpdateCardRequestDto cardDto)
         {
-            if (id != card.Id){ return BadRequest(); }
+            var card = cardDto.ToCardFromUpdateDto();
+            if (id != card.Id) { return BadRequest(); }
 
             _context.Entry(card).State = EntityState.Modified;
 
@@ -63,8 +71,9 @@ namespace CardCollector_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Card>> PostCard(Card card)
+        public async Task<ActionResult<Card>> PostCard(CreateCardRequestDto cardDto)
         {
+            var card = cardDto.ToCardFromCreateDto();
             _context.Cards.Add(card);
             await _context.SaveChangesAsync();
 
