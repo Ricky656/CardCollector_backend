@@ -13,5 +13,5 @@ public class User
     [StringLength(20, MinimumLength=1, ErrorMessage= "Username must be between 1-20 characters")]
     public string Username { get; set; }
 
-    public ICollection<UserCard> Cards { get; set; }
+    public ICollection<UserCard> UserCards { get; set; } = null!;
 }

@@ -17,5 +17,5 @@ public class Card
     public string Name { get; set; }
     public CardRarity Rarity { get; set; }
 
-    public ICollection<User> Users { get; set; }
+    public ICollection<UserCard> UserCards { get; set; } = null!;
 }

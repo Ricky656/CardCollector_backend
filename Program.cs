@@ -1,6 +1,8 @@
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using CardCollector_backend.Models;
+using CardCollector_backend.Data;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -13,7 +15,11 @@ builder.Services.AddSwaggerGen(c =>
      c.SwaggerDoc("v1", new OpenApiInfo { Title = "CardCollector API", Description = "", Version = "v1" });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    });
 builder.Services.AddSqlite<AppDbContext>(connectionString);
 
 var app = builder.Build();
@@ -21,6 +27,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.EnsureCreated();
+        Seeder.Seed(context);
+    }
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(options =>

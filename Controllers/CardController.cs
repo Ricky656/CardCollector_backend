@@ -23,7 +23,7 @@ namespace CardCollector_backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Card>>> GetCards()
         {
-            return await _context.Cards.ToListAsync();
+            return await _context.Cards.Include("UserCards").ToListAsync();
         }
 
         [HttpGet("{id}")]
