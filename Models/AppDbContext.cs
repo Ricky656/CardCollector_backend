@@ -9,5 +9,6 @@ public class AppDbContext : DbContext
     {
     }
     public DbSet<Card> Cards { get; set; } = null!;
-
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<UserCard> UserCards { get; set; } = null;
 }
