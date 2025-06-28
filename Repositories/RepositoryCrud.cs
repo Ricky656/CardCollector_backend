@@ -6,7 +6,7 @@ namespace CardCollector_backend.Repositories;
 
 public abstract class RepositoryCrud<TModel> : IRepositoryCrud<TModel> where TModel : class
 {
-    private readonly DbSet<TModel> _dbSet;
+    public DbSet<TModel> _dbSet { get; }
     public DbContext Context { get; }
 
     protected RepositoryCrud(DbContext context)
@@ -25,33 +25,41 @@ public abstract class RepositoryCrud<TModel> : IRepositoryCrud<TModel> where TMo
         return (await _dbSet.FindAsync(id))!;
     }
 
-    public virtual async Task CreateAsync(TModel model)
+    public virtual async Task<TModel> CreateAsync(TModel model)
     {
         await _dbSet.AddAsync(model);
+        await Context.SaveChangesAsync();
+        return model;
 
     }
 
-    public virtual void Update(TModel model)
+    public virtual async Task<TModel?> Update(TModel model)
     {
-        Context.Entry(model).State = EntityState.Modified;
+        //Context.Entry(model).State = EntityState.Modified;
+        _dbSet.Update(model);
+        await Context.SaveChangesAsync();
+        return model;
     }
 
-    public virtual void Delete(TModel model)
+    public virtual async Task<TModel?> Delete(TModel model)
     {
         _dbSet.Remove(model);
+        await Context.SaveChangesAsync();
+        return model;
     }
 
-    public virtual void Delete(long id)
+    public virtual async Task<TModel?> Delete(long id)
     {
-        TModel model = _dbSet.Find(id)!;
+        var model = await _dbSet.FindAsync(id);
         if (model != null)
         {
-            Delete(model);
+            model = await Delete(model);
         }
+        return model;
     }
 
-    public async Task<int> Save()
+    /*public async Task<TModel?> Save()
     {
         return await Context.SaveChangesAsync();
-    }
+    }*/
 }

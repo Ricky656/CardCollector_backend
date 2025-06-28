@@ -13,24 +13,22 @@ public class CardService : ICardService
     {
         _cardRepo = repository; 
     }
-    public async Task AddCard(CreateCardRequestDto cardDto)
+    public async Task<GetCardResponseDto> AddCard(CreateCardRequestDto cardDto)
     {
         Card card = cardDto.ToCardFromCreateDto();
         await _cardRepo.CreateAsync(card);
-        await _cardRepo.Save();
-        return;
+        return card.ToGetDtoFromCard();
     }
 
-    public async Task DeleteCard(long id)
+    public async Task<GetCardResponseDto?> DeleteCard(long id)
     {
         Card? card = await _cardRepo.GetByIdAsync(id);
         if (card == null)
         {
-            return;
+            return null;
         }
-        _cardRepo.Delete(card);
-        await _cardRepo.Save();
-        return;
+        await _cardRepo.Delete(card);
+        return card.ToGetDtoFromCard();
     }
 
     public async Task<GetCardResponseDto?> GetCard(long id)
@@ -46,11 +44,15 @@ public class CardService : ICardService
         return cardDtos;
     }
 
-    public void UpdateCard(long id, UpdateCardRequestDto cardDto)
+    public async Task<GetCardResponseDto?> UpdateCard(long id, UpdateCardRequestDto cardDto)
     {
-        Card card = cardDto.ToCardFromUpdateDto();
-        _cardRepo.Update(card);
-        _cardRepo.Save();
-        return;
+        if (!_cardRepo.CardExists(id))
+        {
+            return null;
+        }
+
+        var card = cardDto.ToCardFromUpdateDto();
+        card = await _cardRepo.Update(card);
+        return card?.ToGetDtoFromCard();
     }
 }

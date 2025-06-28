@@ -38,51 +38,37 @@ namespace CardCollector_backend.Controllers
                 .Include("UserCards")
                 .FirstOrDefaultAsync(x => x.Id == id);*/
             GetCardResponseDto? cardDto = await _cardService.GetCard(id);
-            if (cardDto == null) { return NotFound(); }
-
-            return cardDto;
+            return cardDto == null ? NotFound() : Ok(cardDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCard(long id, UpdateCardRequestDto cardDto)
+        public async Task<ActionResult<GetCardResponseDto?>> PutCard(long id, UpdateCardRequestDto cardDto)
         {
-            /*var card = cardDto.ToCardFromUpdateDto();
-            if (id != card.Id) { return BadRequest(); }
-
-            _context.Entry(card).State = EntityState.Modified;
-
-            try
+            if (id != cardDto.Id) { return BadRequest(); }
+            var card = await _cardService.UpdateCard(id, cardDto);
+            if (card == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CardExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }*/
-            _cardService.UpdateCard(id, cardDto);
-            return NoContent();
+            return card;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Card>> PostCard(CreateCardRequestDto cardDto)
+        public async Task<ActionResult<GetCardResponseDto>> PostCard(CreateCardRequestDto cardDto)
         {
-            //var card = await _cardService.AddCard(cardDto);
-            await _cardService.AddCard(cardDto);
-            return NoContent();
+            var card = await _cardService.AddCard(cardDto);
+            return card;
 
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCard(long id)
         {
-            await _cardService.DeleteCard(id);
+            var card = await _cardService.DeleteCard(id);
+            if (card == null)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
     }

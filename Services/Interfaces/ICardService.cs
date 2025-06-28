@@ -8,7 +8,7 @@ public interface ICardService
 {
     Task<IEnumerable<GetCardResponseDto>> GetCards();
     Task<GetCardResponseDto?> GetCard(long id);
-    Task AddCard(CreateCardRequestDto card);
-    void UpdateCard(long id, UpdateCardRequestDto card);
-    Task DeleteCard(long id);
+    Task<GetCardResponseDto> AddCard(CreateCardRequestDto card);
+    Task<GetCardResponseDto?> UpdateCard(long id, UpdateCardRequestDto card);
+    Task<GetCardResponseDto?> DeleteCard(long id);
 }
