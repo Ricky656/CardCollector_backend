@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using CardCollector_backend.Models;
 using CardCollector_backend.Data;
 using System.Text.Json.Serialization;
+using CardCollector_backend.Services.Interfaces;
+using CardCollector_backend.Services;
+using CardCollector_backend.Repositories.Interfaces;
+using CardCollector_backend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -21,6 +25,9 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     });
 builder.Services.AddSqlite<AppDbContext>(connectionString);
+
+builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<ICardService, CardService>();
 
 var app = builder.Build();
 
