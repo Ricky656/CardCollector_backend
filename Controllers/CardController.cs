@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CardCollector_backend.Models;
-using CardCollector_backend.Dtos.Card;
+using CardCollector_backend.Dtos.Cards;
 using CardCollector_backend.Mappers;
 using CardCollector_backend.Services;
 using CardCollector_backend.Services.Interfaces;

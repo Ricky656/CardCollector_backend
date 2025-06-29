@@ -2,7 +2,7 @@ using CardCollector_backend.Models;
 
 namespace CardCollector_backend.Repositories.Interfaces;
 
-public interface ICardRepository : IRepositoryCrud<Card>
+public interface IUserRepository : IRepositoryCrud<User>
 {
-    bool CardExists(long id);
+    bool UserExists(long id);
 }

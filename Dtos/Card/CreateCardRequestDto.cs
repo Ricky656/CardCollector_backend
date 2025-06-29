@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using CardCollector_backend.Enums;
 
-namespace CardCollector_backend.Dtos.Card;
+namespace CardCollector_backend.Dtos.Cards;
 
 public class CreateCardRequestDto
 {

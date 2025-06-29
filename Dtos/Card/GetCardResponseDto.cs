@@ -1,7 +1,7 @@
 using CardCollector_backend.Enums;
 using CardCollector_backend.Models;
 
-namespace CardCollector_backend.Dtos.Card;
+namespace CardCollector_backend.Dtos.Cards;
 
 public class GetCardResponseDto
 {

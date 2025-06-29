@@ -1,4 +1,4 @@
-using CardCollector_backend.Dtos.Card;
+using CardCollector_backend.Dtos.Cards;
 using CardCollector_backend.Models;
 
 namespace CardCollector_backend.Mappers;
