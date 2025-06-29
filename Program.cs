@@ -7,6 +7,7 @@ using CardCollector_backend.Services.Interfaces;
 using CardCollector_backend.Services;
 using CardCollector_backend.Repositories.Interfaces;
 using CardCollector_backend.Repositories;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -28,6 +29,10 @@ builder.Services.AddSqlite<AppDbContext>(connectionString);
 
 builder.Services.AddScoped<ICardRepository, CardRepository>();
 builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserCardRepository, UserCardRepository>();
+builder.Services.AddScoped<IUserCardService, UserCardService>();
 
 var app = builder.Build();
 

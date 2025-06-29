@@ -45,8 +45,14 @@ public class UserService : IUserService
         return userDtos;
     }
 
-    public Task<GetUserResponseDto?> UpdateUser(long id, UpdateUserRequestDto user)
+    public async Task<GetUserResponseDto?> UpdateUser(long id, UpdateUserRequestDto userDto)
     {
-        throw new NotImplementedException();
+        if (!_userRepo.UserExists(id))
+        {
+            return null;
+        }
+        User? user = userDto.ToUserFromUpdateDto();
+        user = await _userRepo.Update(user);
+        return user?.ToGetUserResponseDto();
     }
 }
