@@ -14,7 +14,7 @@ public class UserService : IUserService
     {
         _userRepo = repository;
     }
-    public async Task<GetUserResponseDto?> AddUser(CreateUserRequestDto userDto)
+    public async Task<GetUserResponseDto> AddUser(CreateUserRequestDto userDto)
     {
         User user = userDto.ToUserFromCreateDto();
         await _userRepo.CreateAsync(user);
