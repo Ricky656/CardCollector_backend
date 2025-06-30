@@ -33,6 +33,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserCardRepository, UserCardRepository>();
 builder.Services.AddScoped<IUserCardService, UserCardService>();
+builder.Services.AddScoped<IPackRepository, PackRepository>();
+builder.Services.AddScoped<IPackService, PackService>();
 
 var app = builder.Build();
 

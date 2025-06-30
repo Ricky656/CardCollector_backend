@@ -4,13 +4,13 @@ using CardCollector_backend.Models;
 
 namespace CardCollector_backend.Repositories;
 
-public class CardRepository : RepositoryCrud<Card>, ICardRepository
+public class PackRepository : RepositoryCrud<Pack>, IPackRepository
 {
-    public CardRepository(AppDbContext context) : base(context)
+    public PackRepository(AppDbContext context) : base(context)
     {
     }
 
-    public async Task<bool> CardExists(long id)
+    public async Task<bool> PackExists(long id)
     {
         return await _dbSet.AnyAsync(e => e.Id == id);
     }
