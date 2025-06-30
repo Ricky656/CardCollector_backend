@@ -21,7 +21,6 @@ public static class PackMappers
         return new Pack
         {
             Name = packDto.Name,
-            Cards = packDto.Cards.ToCardCollection()
         };
     }
 
@@ -31,7 +30,6 @@ public static class PackMappers
         {
             Id = packDto.Id,
             Name = packDto.Name,
-            Cards = packDto.Cards.ToCardCollection()
         };
     }
 
@@ -40,8 +38,8 @@ public static class PackMappers
         return cards == null ? null : [.. cards.Select(c => c.ToGetDtoFromCard())];
     }
 
-    public static ICollection<Card>? ToCardCollection(this ICollection<UpdateCardRequestDto> cards)
+    /*public static ICollection<Card>? ToCardCollection(this ICollection<UpdateCardRequestDto> cards)
     {
         return cards == null? null : [.. cards.Select(c => c.ToCardFromUpdateDto())];
-    }
+    }*/
 }

@@ -45,7 +45,7 @@ namespace CardCollector_backend.Controllers
         public async Task<ActionResult<GetCardResponseDto>> PostCard(CreateCardRequestDto cardDto)
         {
             GetCardResponseDto card = await _cardService.AddCard(cardDto);
-            return card;
+            return Ok(card);
 
         }
 

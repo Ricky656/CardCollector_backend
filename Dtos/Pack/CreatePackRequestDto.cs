@@ -8,5 +8,5 @@ public class CreatePackRequestDto
     [Required]
     public string Name { get; set; }
 
-    public ICollection<UpdateCardRequestDto> Cards { get; set; } = null!;
+    public ICollection<int> CardIds { get; set; } = null!;
 }
