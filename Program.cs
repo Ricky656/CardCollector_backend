@@ -1,6 +1,13 @@
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using CardCollector_backend.Models;
+using CardCollector_backend.Data;
+using System.Text.Json.Serialization;
+using CardCollector_backend.Services.Interfaces;
+using CardCollector_backend.Services;
+using CardCollector_backend.Repositories.Interfaces;
+using CardCollector_backend.Repositories;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -13,14 +20,32 @@ builder.Services.AddSwaggerGen(c =>
      c.SwaggerDoc("v1", new OpenApiInfo { Title = "CardCollector API", Description = "", Version = "v1" });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    });
 builder.Services.AddSqlite<AppDbContext>(connectionString);
+
+builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserCardRepository, UserCardRepository>();
+builder.Services.AddScoped<IUserCardService, UserCardService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.EnsureCreated();
+        Seeder.Seed(context);
+    }
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(options =>

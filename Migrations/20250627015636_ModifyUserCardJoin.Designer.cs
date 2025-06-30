@@ -2,6 +2,7 @@
 using CardCollector_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CardCollector_backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250627015636_ModifyUserCardJoin")]
+    partial class ModifyUserCardJoin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
@@ -41,12 +44,17 @@ namespace CardCollector_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("CardId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CardId");
 
                     b.ToTable("Users");
                 });
@@ -72,10 +80,17 @@ namespace CardCollector_backend.Migrations
                     b.ToTable("UserCards");
                 });
 
+            modelBuilder.Entity("CardCollector_backend.Models.User", b =>
+                {
+                    b.HasOne("CardCollector_backend.Models.Card", null)
+                        .WithMany("UserCards")
+                        .HasForeignKey("CardId");
+                });
+
             modelBuilder.Entity("CardCollector_backend.Models.UserCard", b =>
                 {
                     b.HasOne("CardCollector_backend.Models.Card", "Card")
-                        .WithMany("UserCards")
+                        .WithMany()
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

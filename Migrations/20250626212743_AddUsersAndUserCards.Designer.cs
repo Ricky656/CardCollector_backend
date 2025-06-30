@@ -2,6 +2,7 @@
 using CardCollector_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CardCollector_backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250626212743_AddUsersAndUserCards")]
+    partial class AddUsersAndUserCards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
@@ -41,6 +44,9 @@ namespace CardCollector_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("CardId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -48,7 +54,9 @@ namespace CardCollector_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("CardId");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("CardCollector_backend.Models.UserCard", b =>
@@ -69,19 +77,26 @@ namespace CardCollector_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserCards");
+                    b.ToTable("UserCard");
+                });
+
+            modelBuilder.Entity("CardCollector_backend.Models.User", b =>
+                {
+                    b.HasOne("CardCollector_backend.Models.Card", null)
+                        .WithMany("Users")
+                        .HasForeignKey("CardId");
                 });
 
             modelBuilder.Entity("CardCollector_backend.Models.UserCard", b =>
                 {
                     b.HasOne("CardCollector_backend.Models.Card", "Card")
-                        .WithMany("UserCards")
+                        .WithMany()
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CardCollector_backend.Models.User", "User")
-                        .WithMany("UserCards")
+                        .WithMany("Cards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -93,12 +108,12 @@ namespace CardCollector_backend.Migrations
 
             modelBuilder.Entity("CardCollector_backend.Models.Card", b =>
                 {
-                    b.Navigation("UserCards");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("CardCollector_backend.Models.User", b =>
                 {
-                    b.Navigation("UserCards");
+                    b.Navigation("Cards");
                 });
 #pragma warning restore 612, 618
         }
