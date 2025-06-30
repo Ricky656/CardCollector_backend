@@ -9,7 +9,6 @@ public class UserCard
     public long UserId { get; set; }
     [Required]
     public long CardId { get; set; }
-
     public User User { get; set; }
     public Card Card { get; set; }
 }

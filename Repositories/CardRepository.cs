@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using CardCollector_backend.Repositories;
 using CardCollector_backend.Repositories.Interfaces;
 using CardCollector_backend.Models;
-using Microsoft.Identity.Client;
 
 namespace CardCollector_backend.Repositories;
 

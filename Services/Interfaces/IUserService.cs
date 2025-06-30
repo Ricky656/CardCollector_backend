@@ -13,4 +13,5 @@ public interface IUserService
     Task<GetUserResponseDto?> DeleteUser(long id);
     Task<GetUserCardResponseDto?> AddUserCard(CreateUserCardRequestDto userCardDto);
     Task<GetUserCardResponseDto?> DeleteUserCard(long id, long cardId);
+    Task<IEnumerable<GetUserCardResponseDto>?> OpenPack(long id, long packId);
 }

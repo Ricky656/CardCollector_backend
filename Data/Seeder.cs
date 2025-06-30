@@ -7,7 +7,7 @@ public static class Seeder
 {
     public static void Seed(AppDbContext context)
     {
-        if(context.Cards.Any()){ return; }
+        if (context.Cards.Any()) { return; }
         var cards = new Card[]
         {
             new(){Name="Sssstately Snake", Rarity=CardRarity.Common},
@@ -20,7 +20,7 @@ public static class Seeder
         context.Cards.AddRange(cards);
         context.SaveChanges();
 
-        var user = new User{Username="TestUser"};
+        var user = new User { Username = "TestUser" };
         context.Users.Add(user);
         context.SaveChanges();
 
@@ -32,6 +32,14 @@ public static class Seeder
             new(){UserId=1, CardId=4}
         };
         context.UserCards.AddRange(userCards);
+        context.SaveChanges();
+
+        var pack = new Pack
+        {
+            Name = "Alpha Animals",
+            Cards = cards
+        };
+        context.Packs.Add(pack);
         context.SaveChanges();
     }
 }

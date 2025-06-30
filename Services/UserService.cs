@@ -10,12 +10,16 @@ namespace CardCollector_backend.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepo;
+    private readonly IPackRepository _packRepo;
     private readonly IUserCardService _userCardService;
 
-    public UserService(IUserRepository repository, IUserCardService cardService)
+    private const int CardsPerPack = 3;
+
+    public UserService(IUserRepository userRepository, IUserCardService cardService, IPackRepository packRepository)
     {
-        _userRepo = repository;
+        _userRepo = userRepository;
         _userCardService = cardService;
+        _packRepo = packRepository;
     }
     public async Task<GetUserResponseDto> AddUser(CreateUserRequestDto userDto)
     {
@@ -83,5 +87,27 @@ public class UserService : IUserService
     public async Task<GetUserCardResponseDto?> DeleteUserCard(long userId, long cardId)
     {
         return await _userCardService.DeleteUserCard(userId, cardId);
+    }
+
+    public async Task<IEnumerable<GetUserCardResponseDto>?> OpenPack(long userId, long packId)
+    {
+        if (await _userRepo.UserExists(userId) == false || await _packRepo.PackExists(packId) == false)
+        {
+            return null;
+        }
+        Pack? pack = await _packRepo.GetByIdAsync(packId);
+        ICollection<GetUserCardResponseDto?> cards = [];
+        Random rng = new();
+        for (int i = 0; i < CardsPerPack; i++)
+        {
+            int cardIndex = rng.Next(0, pack.Cards.Count - 1);
+            UserCard newCard = new UserCard
+            {
+                UserId = userId,
+                CardId = pack.Cards.ElementAt(cardIndex).Id
+            };
+            cards.Add(await _userCardService.AddUserCard(newCard));
+        }
+        return cards;
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using CardCollector_backend.Repositories.Interfaces;
-using SQLitePCL;
 
 namespace CardCollector_backend.Repositories;
 

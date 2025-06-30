@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CardCollector_backend.Services.Interfaces;
 using CardCollector_backend.Dtos.Users;
 using CardCollector_backend.Dtos.UserCards;
+using CardCollector_backend.Models;
 
 namespace CardCollector_backend.Controllers
 {
@@ -60,7 +61,7 @@ namespace CardCollector_backend.Controllers
         [HttpPost("{id}/Cards")]
         public async Task<ActionResult<GetUserCardResponseDto?>> PostUserCard(long id, CreateUserCardRequestDto userCardDto)
         {
-            if(userCardDto.UserId != id){ return BadRequest(); }
+            if (userCardDto.UserId != id) { return BadRequest(); }
             GetUserCardResponseDto? userCard = await _userService.AddUserCard(userCardDto);
             return userCard == null ? NotFound() : Ok(userCard);
         }
@@ -70,6 +71,13 @@ namespace CardCollector_backend.Controllers
         {
             GetUserCardResponseDto? userCard = await _userService.DeleteUserCard(id, userCardId);
             return userCard == null ? NotFound() : NoContent();
+        }
+
+        [HttpPost("{id}/Packs/{packId}")]
+        public async Task<ActionResult<IEnumerable<GetUserCardResponseDto>?>> OpenPack(long id, long packId)
+        {
+            IEnumerable<GetUserCardResponseDto>? userCards = await _userService.OpenPack(id, packId);
+            return userCards == null ? NotFound() : Ok(userCards);
         }
     }
 }
