@@ -21,7 +21,7 @@ public static class CardMappers
             Id = card.Id,
             Name = card.Name,
             Rarity = card.Rarity,
-            UserCards = card.UserCards
+            //UserCards = card.UserCards
         };
     }
 

@@ -20,7 +20,8 @@ public static class UserCardMappers
         {
             Id = userCard.Id,
             UserId = userCard.UserId,
-            CardId = userCard.CardId
+            CardId = userCard.CardId,
+            Card = userCard.Card.ToGetDtoFromCard()
         };
     }
 }

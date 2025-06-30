@@ -7,11 +7,11 @@ namespace CardCollector_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CardController : ControllerBase
+    public class CardsController : ControllerBase
     {
         private readonly ICardService _cardService;
 
-        public CardController(ICardService cardService)
+        public CardsController(ICardService cardService)
         {
             _cardService = cardService;
         }

@@ -4,5 +4,5 @@ namespace CardCollector_backend.Repositories.Interfaces;
 
 public interface ICardRepository : IRepositoryCrud<Card>
 {
-    bool CardExists(long id);
+    Task<bool> CardExists(long id);
 }

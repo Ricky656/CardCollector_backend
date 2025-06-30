@@ -46,7 +46,7 @@ public class CardService : ICardService
 
     public async Task<GetCardResponseDto?> UpdateCard(long id, UpdateCardRequestDto cardDto)
     {
-        if (!_cardRepo.CardExists(id))
+        if (await _cardRepo.CardExists(id) == false)
         {
             return null;
         }

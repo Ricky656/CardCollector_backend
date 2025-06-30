@@ -9,26 +9,32 @@ namespace CardCollector_backend.Services;
 public class UserCardService : IUserCardService
 {
     private readonly IUserCardRepository _userCardRepo;
+    private readonly ICardRepository _cardRepo;
 
-    public UserCardService(IUserCardRepository repository)
+    public UserCardService(IUserCardRepository repository, ICardRepository cardRepository)
     {
         _userCardRepo = repository;
+        _cardRepo = cardRepository;
     }
-    public async Task<GetUserCardResponseDto> AddUserCard(long cardId, long userId)
+    public async Task<GetUserCardResponseDto?> AddUserCard(UserCard userCard)
     {
-        UserCard userCard = new()
+        Card? card = await _cardRepo.GetByIdAsync(userCard.CardId);
+        if (card == null)
         {
-            CardId = cardId,
-            UserId = userId
-        };
+            return null;
+        }
+        userCard.Card = card;
         await _userCardRepo.CreateAsync(userCard);
         return userCard.ToGetUserCardResponseDto();
     }
 
-    public async Task<GetUserCardResponseDto?> DeleteUserCard(long userCardId)
+    public async Task<GetUserCardResponseDto?> DeleteUserCard(long userId, long userCardId)
     {
+        //TODO: Mismatched Ids should return BadRequest(), difficult to achieve that without changing how
+        //services pass back up to controllers, using some encsulating Response object - altenatively throw/catch
+        //errors to achieve this behaviour. 
         UserCard? userCard = await _userCardRepo.GetByIdAsync(userCardId);
-        if (userCard == null)
+        if (userCard == null || userCard.UserId != userId)
         {
             return null;
         }
@@ -36,15 +42,15 @@ public class UserCardService : IUserCardService
         return userCard?.ToGetUserCardResponseDto();
     }
 
-    public async Task<GetUserCardResponseDto?> GetUserCard(long userCardId)
+    public async Task<UserCard?> GetUserCard(long userCardId)
     {
         UserCard? userCard = await _userCardRepo.GetByIdAsync(userCardId);
-        return userCard?.ToGetUserCardResponseDto();
+        return userCard;
     }
 
-    public async Task<IEnumerable<GetUserCardResponseDto>> GetUserCards(long userId)
+    public async Task<ICollection<UserCard>> GetUserCards(long userId)
     {
-        IEnumerable<UserCard> userCards = await _userCardRepo.GetAllByIdAsync(userId);
-        return userCards.Select(e => e.ToGetUserCardResponseDto());
+        ICollection<UserCard> userCards = (ICollection<UserCard>)await _userCardRepo.GetAllByIdAsync(userId);
+        return userCards;
     }
 }

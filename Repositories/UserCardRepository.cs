@@ -6,20 +6,20 @@ namespace CardCollector_backend.Repositories;
 
 public class UserCardRepository : RepositoryCrud<UserCard>, IUserCardRepository
 {
+    //UserCards are set to always include associated Card object via Entity Framework's model builder options
     public UserCardRepository(AppDbContext context) : base(context)
     {
     }
 
-    public bool UserCardExists(long id)
+    public async Task<bool> UserCardExists(long id)
     {
-        return _dbSet.Any(e => e.Id == id);
+        return await _dbSet.AnyAsync(e => e.Id == id);
     }
 
     public async Task<IEnumerable<UserCard>> GetAllByIdAsync(long userId)
     {
         return await _dbSet
-            .Include("Users")
-            .Where(u => u.Id == userId)
+            .Where(u => u.UserId == userId)
             .ToListAsync();
     }
 }

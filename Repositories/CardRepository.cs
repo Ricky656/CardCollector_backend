@@ -12,8 +12,8 @@ public class CardRepository : RepositoryCrud<Card>, ICardRepository
     {
     }
 
-    public bool CardExists(long id)
+    public async Task<bool> CardExists(long id)
     {
-        return _dbSet.Any(e => e.Id == id);
+        return await _dbSet.AnyAsync(e => e.Id == id);
     }
 }

@@ -9,5 +9,5 @@ public class GetCardResponseDto
     public string Name { get; set; }
     public CardRarity Rarity { get; set; }
 
-    public ICollection<UserCard> UserCards { get; set; } = null!;
+    //public ICollection<UserCard> UserCards { get; set; } = null!;
 }

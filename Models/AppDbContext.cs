@@ -25,6 +25,9 @@ public class AppDbContext : DbContext
             .HasOne(e => e.Card)
             .WithMany(p => p.UserCards)
             .HasForeignKey(d => d.CardId);
-        
+
+        builder.Entity<UserCard>()
+            .Navigation(e => e.Card)
+            .AutoInclude();
     }
 }
