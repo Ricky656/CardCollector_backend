@@ -14,6 +14,16 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Add services to the container.
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("DevPolicy", policyBuilder =>
+    {
+        policyBuilder.AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithOrigins("http://localhost:5173");
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -55,6 +65,8 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "CardCollector API V1");
     });
 }
+
+app.UseCors("DevPolicy");
 
 app.UseHttpsRedirection();
 
