@@ -4,6 +4,7 @@ using CardCollector_backend.Mappers;
 using CardCollector_backend.Models;
 using CardCollector_backend.Dtos.Users;
 using CardCollector_backend.Dtos.UserCards;
+using Microsoft.AspNetCore.Identity;
 
 namespace CardCollector_backend.Services;
 
@@ -12,14 +13,37 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepo;
     private readonly IPackRepository _packRepo;
     private readonly IUserCardService _userCardService;
+    private readonly ITokenService _tokenService;
 
     private const int CardsPerPack = 3;
 
-    public UserService(IUserRepository userRepository, IUserCardService cardService, IPackRepository packRepository)
+    public UserService(IUserRepository userRepository, IUserCardService cardService,
+        IPackRepository packRepository, ITokenService tokenService)
     {
         _userRepo = userRepository;
         _userCardService = cardService;
         _packRepo = packRepository;
+        _tokenService = tokenService;
+    }
+
+    public async Task<LoginResponseUserDto?> Login(LoginUserDto userDto)
+    {
+        User? user = await _userRepo.GetByEmailAsync(userDto.Email);
+        if (user == null) { return null; }
+        if (new PasswordHasher<User>()
+            .VerifyHashedPassword(user, user.PasswordHash, userDto.Password)
+            == PasswordVerificationResult.Failed)
+        {
+            return null;
+        }
+
+        LoginResponseUserDto loginDto = new()
+        {
+            Username = user.Username,
+            Email = user.Email,
+            Token = _tokenService.CreateToken(user)
+        };
+        return loginDto;
     }
     public async Task<GetUserResponseDto> AddUser(CreateUserRequestDto userDto)
     {

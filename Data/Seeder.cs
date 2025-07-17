@@ -1,5 +1,6 @@
 using CardCollector_backend.Enums;
 using CardCollector_backend.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CardCollector_backend.Data;
 
@@ -20,7 +21,8 @@ public static class Seeder
         context.Cards.AddRange(cards);
         context.SaveChanges();
 
-        var user = new User { Username = "TestUser" };
+        var user = new User { Username = "TestUser", Email = "user@test.com"};
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "password");
         context.Users.Add(user);
         context.SaveChanges();
 

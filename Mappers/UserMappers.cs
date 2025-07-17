@@ -1,17 +1,21 @@
 using CardCollector_backend.Dtos.Users;
 using CardCollector_backend.Dtos.UserCards;
 using CardCollector_backend.Models;
-
+using CardCollector_backend.Services;
+using Microsoft.AspNetCore.Identity;
 namespace CardCollector_backend.Mappers;
 
 public static class UserMappers
 {
-    public static User ToUserFromCreateDto(this CreateUserRequestDto user)
+    public static User ToUserFromCreateDto(this CreateUserRequestDto userDto)
     {
-        return new User
+        User user = new()
         {
-            Username = user.Username
+            Username = userDto.Username,
+            Email = userDto.Email
         };
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, userDto.Password);
+        return user;
     }
     public static GetUserResponseDto ToGetUserResponseDto(this User user)
     {
@@ -36,4 +40,14 @@ public static class UserMappers
             Username = user.Username
         };
     }
+
+    /*public static LoginResponseUserDto ToLoginDtoFromUser(this User user)
+    {
+        return new LoginResponseUserDto
+        {
+            Username = user.Username,
+            Email = user.Email,
+            Token = new TokenService().CreateToken(user)
+        }
+    }*/
 }

@@ -1,8 +1,8 @@
-using System.Collections.ObjectModel;
 using CardCollector_backend.Dtos.Packs;
 using CardCollector_backend.Mappers;
 using CardCollector_backend.Models;
 using CardCollector_backend.Repositories.Interfaces;
+using CardCollector_backend.Services.Interfaces;
 
 namespace CardCollector_backend.Services;
 

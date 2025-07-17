@@ -3,6 +3,7 @@ using CardCollector_backend.Services.Interfaces;
 using CardCollector_backend.Dtos.Users;
 using CardCollector_backend.Dtos.UserCards;
 using CardCollector_backend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CardCollector_backend.Controllers
 {
@@ -36,6 +37,13 @@ namespace CardCollector_backend.Controllers
         {
             GetUserResponseDto? userDto = await _userService.GetUserCards(id);
             return userDto == null ? NotFound() : Ok(userDto);
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResponseUserDto>> Login(LoginUserDto userDto)
+        {
+            LoginResponseUserDto? login = await _userService.Login(userDto);
+            return login == null ? BadRequest("Email or password are wrong!") : Ok(login);
         }
 
         [HttpPut("{id}")]
