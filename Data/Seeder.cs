@@ -21,7 +21,7 @@ public static class Seeder
         context.Cards.AddRange(cards);
         context.SaveChanges();
 
-        var user = new User { Username = "TestUser", Email = "user@test.com"};
+        var user = new User { Username = "TestUser", Email = "user@test.com", Role = "User"};
         user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "password");
         context.Users.Add(user);
         context.SaveChanges();

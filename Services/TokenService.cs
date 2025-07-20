@@ -18,11 +18,12 @@ public class TokenService : ITokenService
         List<Claim> claims =
         [
             new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Role, user.Role)
         ];
 
         SymmetricSecurityKey key = new(
-            Encoding.UTF8.GetBytes(_config.GetValue<string>("AppSettings:Token")!)
+            Encoding.UTF8.GetBytes(_config.GetValue<string>("AppSettings:Secret")!)
         );
 
         SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha512);
@@ -31,7 +32,7 @@ public class TokenService : ITokenService
             issuer: _config.GetValue<string>("AppSettings:Issuer"),
             audience: _config.GetValue<string>("AppSettings:Audience"),
             claims: claims,
-            expires: DateTime.UtcNow.AddDays(1),
+            expires: DateTime.UtcNow.AddMinutes(_config.GetValue<double>("AppSettings:TokenValidityMinutes")),
             signingCredentials: creds
         );
 
