@@ -45,6 +45,12 @@ namespace CardCollector_backend.Controllers
             LoginResponseUserDto? login = await _userService.Login(userDto);
             return login == null ? BadRequest("Email or password are wrong!") : Ok(login);
         }
+        [HttpPost("refresh")]
+        public async Task<ActionResult<LoginResponseUserDto?>> RefreshLogin(RefreshLoginDto refreshDto)
+        {
+            LoginResponseUserDto? responseDto = await _userService.RefreshLogin(refreshDto);
+            return responseDto == null ? Unauthorized("Invalid refresh token") : responseDto;
+        }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<GetUserResponseDto>> PutUser(long id, UpdateUserRequestDto userDto)

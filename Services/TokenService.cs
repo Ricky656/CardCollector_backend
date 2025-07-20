@@ -1,17 +1,23 @@
 using CardCollector_backend.Models;
 using CardCollector_backend.Services.Interfaces;
+using CardCollector_backend.Dtos.Users;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using CardCollector_backend.Repositories.Interfaces;
 
 namespace CardCollector_backend.Services;
+
 public class TokenService : ITokenService
 {
     private readonly IConfiguration _config;
-    public TokenService(IConfiguration configuration)
+    private readonly IUserRepository _userRepo;
+    public TokenService(IConfiguration configuration, IUserRepository userRepository)
     {
         _config = configuration;
+        _userRepo = userRepository;
     }
     public string CreateToken(User user)
     {
@@ -37,5 +43,28 @@ public class TokenService : ITokenService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public string CreateRefreshToken()
+    {
+        Byte[] ran = new byte[32];
+        using RandomNumberGenerator rng = RandomNumberGenerator.Create();
+        rng.GetBytes(ran);
+        return Convert.ToBase64String(ran);
+    }
+
+    public async Task<LoginResponseUserDto> CreateUserTokens(User user)
+    {
+        LoginResponseUserDto loginDto = new()
+        {
+            Username = user.Username,
+            Email = user.Email,
+            Token = CreateToken(user),
+            RefreshToken = CreateRefreshToken()
+        };
+        user.RefreshToken = loginDto.RefreshToken;
+        user.RefreshTokenExpirey = DateTime.UtcNow.AddDays(_config.GetValue<double>("AppSettings:RefreshValidityDays"));
+        await _userRepo.Update(user);
+        return loginDto;
     }
 }
