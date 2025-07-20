@@ -26,7 +26,7 @@ public class UserService : IUserService
         _tokenService = tokenService;
     }
 
-    public async Task<LoginResponseUserDto?> Login(LoginUserDto userDto)
+    public async Task<LoginResponseUserDto?> Login(LoginUserDto userDto, HttpContext context)
     {
         User? user = await _userRepo.GetByEmailAsync(userDto.Email);
         if (user == null) { return null; }
@@ -37,18 +37,18 @@ public class UserService : IUserService
             return null;
         }
 
-        return await _tokenService.CreateUserTokens(user);
+        return await _tokenService.CreateUserTokens(user, context);
     }
 
-    public async Task<LoginResponseUserDto?> RefreshLogin(RefreshLoginDto refreshDto)
+    public async Task<LoginResponseUserDto?> RefreshLogin(RefreshLoginDto refreshDto, HttpContext context)
     {
         User? user = await _userRepo.GetByIdAsync(refreshDto.UserId);
-        if (user == null || user.RefreshTokenExpirey <= DateTime.UtcNow || user.RefreshToken != refreshDto.RefreshToken)
+        if (user == null || refreshDto.RefreshToken == null || user.RefreshTokenExpirey <= DateTime.UtcNow || user.RefreshToken != refreshDto.RefreshToken)
         {
             return null;
         }
 
-        return await _tokenService.CreateUserTokens(user);
+        return await _tokenService.CreateUserTokens(user, context);
     }
 
     public async Task<GetUserResponseDto> AddUser(CreateUserRequestDto userDto)

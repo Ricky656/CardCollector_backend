@@ -4,6 +4,7 @@ using CardCollector_backend.Dtos.Users;
 using CardCollector_backend.Dtos.UserCards;
 using CardCollector_backend.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CardCollector_backend.Controllers
 {
@@ -42,13 +43,15 @@ namespace CardCollector_backend.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseUserDto>> Login(LoginUserDto userDto)
         {
-            LoginResponseUserDto? login = await _userService.Login(userDto);
+            LoginResponseUserDto? login = await _userService.Login(userDto, HttpContext);
             return login == null ? BadRequest("Email or password are wrong!") : Ok(login);
         }
         [HttpPost("refresh")]
         public async Task<ActionResult<LoginResponseUserDto?>> RefreshLogin(RefreshLoginDto refreshDto)
         {
-            LoginResponseUserDto? responseDto = await _userService.RefreshLogin(refreshDto);
+            HttpContext.Request.Cookies.TryGetValue("refreshToken", out string? refreshToken);
+            refreshDto.RefreshToken = refreshToken;
+            LoginResponseUserDto? responseDto = await _userService.RefreshLogin(refreshDto, HttpContext);
             return responseDto == null ? Unauthorized("Invalid refresh token") : responseDto;
         }
 

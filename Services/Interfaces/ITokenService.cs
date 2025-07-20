@@ -7,5 +7,5 @@ public interface ITokenService
 {
     string CreateToken(User user);
     string CreateRefreshToken();
-    Task<LoginResponseUserDto> CreateUserTokens(User user);
+    Task<LoginResponseUserDto> CreateUserTokens(User user, HttpContext context);
 }

@@ -8,8 +8,8 @@ public interface IUserService
     Task<IEnumerable<GetUserResponseDto>> GetUsers();
     Task<GetUserResponseDto?> GetUser(long id);
     Task<GetUserResponseDto?> GetUserCards(long id);
-    Task<LoginResponseUserDto?> Login(LoginUserDto userDto);
-    Task<LoginResponseUserDto?> RefreshLogin(RefreshLoginDto userDto);
+    Task<LoginResponseUserDto?> Login(LoginUserDto userDto, HttpContext context);
+    Task<LoginResponseUserDto?> RefreshLogin(RefreshLoginDto userDto, HttpContext context);
     Task<GetUserResponseDto> AddUser(CreateUserRequestDto userDto);
     Task<GetUserResponseDto?> UpdateUser(long id, UpdateUserRequestDto userDto);
     Task<GetUserResponseDto?> DeleteUser(long id);

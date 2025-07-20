@@ -53,17 +53,29 @@ public class TokenService : ITokenService
         return Convert.ToBase64String(ran);
     }
 
-    public async Task<LoginResponseUserDto> CreateUserTokens(User user)
+    public async Task<LoginResponseUserDto> CreateUserTokens(User user, HttpContext context)
     {
         LoginResponseUserDto loginDto = new()
         {
             Username = user.Username,
             Email = user.Email,
             Token = CreateToken(user),
-            RefreshToken = CreateRefreshToken()
         };
-        user.RefreshToken = loginDto.RefreshToken;
+        string refreshToken = CreateRefreshToken();
+        user.RefreshToken = refreshToken;
         user.RefreshTokenExpirey = DateTime.UtcNow.AddDays(_config.GetValue<double>("AppSettings:RefreshValidityDays"));
+
+        context.Response.Cookies.Delete("refreshToken");
+        context.Response.Cookies.Append("refreshToken", refreshToken,
+            new CookieOptions
+            {
+                Expires = user.RefreshTokenExpirey,
+                HttpOnly = true,
+                IsEssential = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+
         await _userRepo.Update(user);
         return loginDto;
     }
