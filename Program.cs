@@ -23,7 +23,8 @@ builder.Services.AddCors(opt =>
     {
         policyBuilder.AllowAnyHeader()
             .AllowAnyMethod()
-            .WithOrigins("http://localhost:5173");
+            .WithOrigins("http://localhost:5173")
+            .AllowCredentials();
     });
 });
 
@@ -60,6 +61,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudience = builder.Configuration["AppSettings:Audience"],
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             builder.Configuration["AppSettings:Token"]!
         ))

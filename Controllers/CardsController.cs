@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CardCollector_backend.Dtos.Cards;
 using CardCollector_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CardCollector_backend.Controllers
 {
@@ -33,6 +34,7 @@ namespace CardCollector_backend.Controllers
             return cardDto == null ? NotFound() : Ok(cardDto);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<GetCardResponseDto?>> PutCard(long id, UpdateCardRequestDto cardDto)
         {

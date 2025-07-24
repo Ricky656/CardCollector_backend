@@ -57,6 +57,7 @@ public class TokenService : ITokenService
     {
         LoginResponseUserDto loginDto = new()
         {
+            Id = user.Id,
             Username = user.Username,
             Email = user.Email,
             Token = CreateToken(user),
@@ -72,7 +73,7 @@ public class TokenService : ITokenService
                 Expires = user.RefreshTokenExpirey,
                 HttpOnly = true,
                 IsEssential = true,
-                Secure = true,
+                Secure = true, //TODO: DO NOT DEPLOY ANYTHING TO PRODUCTION LIKE THIS, VERY NSECURE
                 SameSite = SameSiteMode.None
             });
 
