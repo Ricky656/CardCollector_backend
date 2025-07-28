@@ -34,7 +34,7 @@ namespace CardCollector_backend.Controllers
             return cardDto == null ? NotFound() : Ok(cardDto);
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult<GetCardResponseDto?>> PutCard(long id, UpdateCardRequestDto cardDto)
         {
@@ -43,6 +43,7 @@ namespace CardCollector_backend.Controllers
             return card == null ? NotFound() : Ok(card);
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<ActionResult<GetCardResponseDto>> PostCard(CreateCardRequestDto cardDto)
         {
@@ -51,6 +52,7 @@ namespace CardCollector_backend.Controllers
 
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCard(long id)
         {

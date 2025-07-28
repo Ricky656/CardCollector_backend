@@ -19,6 +19,7 @@ namespace CardCollector_backend.Controllers
             _userService = service;
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetUserResponseDto>>> GetUsers()
         {
@@ -55,6 +56,13 @@ namespace CardCollector_backend.Controllers
             return responseDto == null ? Unauthorized("Invalid refresh token") : responseDto;
         }
 
+        [Authorize(Roles ="Admin")]
+        [HttpGet("admin")]
+        public ActionResult CheckAdmin()
+        {
+            return Ok();
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult<GetUserResponseDto>> PutUser(long id, UpdateUserRequestDto userDto)
         {
@@ -68,6 +76,8 @@ namespace CardCollector_backend.Controllers
             GetUserResponseDto user = await _userService.AddUser(userDto);
             return user;
         }
+
+        [Authorize(Roles ="Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(long id)
         {
@@ -90,6 +100,7 @@ namespace CardCollector_backend.Controllers
             return userCard == null ? NotFound() : NoContent();
         }
 
+        [Authorize]
         [HttpPost("{id}/Packs/{packId}")]
         public async Task<ActionResult<IEnumerable<GetUserCardResponseDto>?>> OpenPack(long id, long packId)
         {

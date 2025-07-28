@@ -60,6 +60,7 @@ public class TokenService : ITokenService
             Id = user.Id,
             Username = user.Username,
             Email = user.Email,
+            Role = user.Role,
             Token = CreateToken(user),
         };
         string refreshToken = CreateRefreshToken();
