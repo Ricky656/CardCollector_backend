@@ -74,7 +74,7 @@ public class TokenService : ITokenService
                 Expires = user.RefreshTokenExpirey,
                 HttpOnly = true,
                 IsEssential = true,
-                Secure = true, //TODO: DO NOT DEPLOY ANYTHING TO PRODUCTION LIKE THIS, VERY NSECURE
+                Secure = true,
                 SameSite = SameSiteMode.None
             });
 
