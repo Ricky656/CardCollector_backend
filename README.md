@@ -1,4 +1,4 @@
-# Card Collector Frontend
+# Card Collector Backend
 
 The Card Collector is an example project of a generic card collection application, made up of a backend created with C# Asp.Net and a frontend created with React JavaScript.
 
