@@ -1,9 +1,0 @@
-To restore project:
-
-Install .NET 9.0 
-Install dotnet-ef for CLI commands
-Install local development certificate: 'dotnet dev-certs https --trust'
-
-Dependencies will be installed with 'dotnet run'
-
-{adddress}/swagger for the swagger ui
