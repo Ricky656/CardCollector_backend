@@ -11,7 +11,7 @@ This is the backend API of the project, it handles the database and business log
 
 However many endpoints require authorization via JWTs, this is currently not provided in the Swagger UI, so to explore the full functionality I recommend installing and using the CardCollector_frontend.
 
-[Frontend repository](https://github.com/Ricky656/CardCollector_frontend)
+[Frontend Repository](https://github.com/Ricky656/CardCollector_frontend)
 
 ## Tech Stack
 
