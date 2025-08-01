@@ -21,9 +21,9 @@ However many endpoints require authorization via JWTs, this is currently not pro
 
 ## Local Installation
 
-Install .NET 9.0 
+Install .NET 9.0 SDK
 
-*(Optional)* Install dotnet-ef to access CLI commands
+*(Optional)* Install dotnet-ef to access CLI commands: `dotnet tool install --global dotnet-ef`
 
 Install local development certificate: `dotnet dev-certs https --trust`
 
