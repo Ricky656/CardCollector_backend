@@ -8,10 +8,13 @@ public interface IUserService
     Task<IEnumerable<GetUserResponseDto>> GetUsers();
     Task<GetUserResponseDto?> GetUser(long id);
     Task<GetUserResponseDto?> GetUserCards(long id);
+    Task<LoginResponseUserDto?> Login(LoginUserDto userDto, HttpContext context);
+    Task<LoginResponseUserDto?> RefreshLogin(RefreshLoginDto userDto, HttpContext context);
     Task<GetUserResponseDto> AddUser(CreateUserRequestDto userDto);
     Task<GetUserResponseDto?> UpdateUser(long id, UpdateUserRequestDto userDto);
     Task<GetUserResponseDto?> DeleteUser(long id);
     Task<GetUserCardResponseDto?> AddUserCard(CreateUserCardRequestDto userCardDto);
     Task<GetUserCardResponseDto?> DeleteUserCard(long id, long cardId);
     Task<IEnumerable<GetUserCardResponseDto>?> OpenPack(long id, long packId);
+
 }

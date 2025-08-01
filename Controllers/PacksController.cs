@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CardCollector_backend.Dtos.Packs;
 using CardCollector_backend.Services.Interfaces;
 using CardCollector_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CardCollector_backend.Controllers
 {
@@ -30,6 +31,7 @@ namespace CardCollector_backend.Controllers
             return packDto == null ? NotFound() : Ok(packDto);
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult<GetPackResponseDto?>> PutPack(long id, UpdatePackRequestDto packDto)
         {
@@ -38,6 +40,7 @@ namespace CardCollector_backend.Controllers
             return pack == null ? BadRequest() : Ok(pack);
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<ActionResult<GetPackResponseDto?>> PostPack(CreatePackRequestDto packDto)
         {
@@ -45,6 +48,7 @@ namespace CardCollector_backend.Controllers
             return pack == null? BadRequest() : Ok(pack);
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePack(long id)
         {

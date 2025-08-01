@@ -15,4 +15,9 @@ public class UserRepository : RepositoryCrud<User>, IUserRepository
     {
         return await _dbSet.AnyAsync(e => e.Id == id);
     }
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
+    }
 }

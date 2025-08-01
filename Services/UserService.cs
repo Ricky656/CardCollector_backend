@@ -4,6 +4,7 @@ using CardCollector_backend.Mappers;
 using CardCollector_backend.Models;
 using CardCollector_backend.Dtos.Users;
 using CardCollector_backend.Dtos.UserCards;
+using Microsoft.AspNetCore.Identity;
 
 namespace CardCollector_backend.Services;
 
@@ -12,15 +13,44 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepo;
     private readonly IPackRepository _packRepo;
     private readonly IUserCardService _userCardService;
+    private readonly ITokenService _tokenService;
 
     private const int CardsPerPack = 3;
 
-    public UserService(IUserRepository userRepository, IUserCardService cardService, IPackRepository packRepository)
+    public UserService(IUserRepository userRepository, IUserCardService cardService,
+        IPackRepository packRepository, ITokenService tokenService)
     {
         _userRepo = userRepository;
         _userCardService = cardService;
         _packRepo = packRepository;
+        _tokenService = tokenService;
     }
+
+    public async Task<LoginResponseUserDto?> Login(LoginUserDto userDto, HttpContext context)
+    {
+        User? user = await _userRepo.GetByEmailAsync(userDto.Email);
+        if (user == null) { return null; }
+        if (new PasswordHasher<User>()
+            .VerifyHashedPassword(user, user.PasswordHash, userDto.Password)
+            == PasswordVerificationResult.Failed)
+        {
+            return null;
+        }
+
+        return await _tokenService.CreateUserTokens(user, context);
+    }
+
+    public async Task<LoginResponseUserDto?> RefreshLogin(RefreshLoginDto refreshDto, HttpContext context)
+    {
+        User? user = await _userRepo.GetByIdAsync(refreshDto.UserId);
+        if (user == null || refreshDto.RefreshToken == null || user.RefreshTokenExpirey <= DateTime.UtcNow || user.RefreshToken != refreshDto.RefreshToken)
+        {
+            return null;
+        }
+
+        return await _tokenService.CreateUserTokens(user, context);
+    }
+
     public async Task<GetUserResponseDto> AddUser(CreateUserRequestDto userDto)
     {
         User user = userDto.ToUserFromCreateDto();

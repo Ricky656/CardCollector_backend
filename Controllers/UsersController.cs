@@ -3,6 +3,8 @@ using CardCollector_backend.Services.Interfaces;
 using CardCollector_backend.Dtos.Users;
 using CardCollector_backend.Dtos.UserCards;
 using CardCollector_backend.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CardCollector_backend.Controllers
 {
@@ -17,6 +19,7 @@ namespace CardCollector_backend.Controllers
             _userService = service;
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetUserResponseDto>>> GetUsers()
         {
@@ -38,6 +41,28 @@ namespace CardCollector_backend.Controllers
             return userDto == null ? NotFound() : Ok(userDto);
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResponseUserDto>> Login(LoginUserDto userDto)
+        {
+            LoginResponseUserDto? login = await _userService.Login(userDto, HttpContext);
+            return login == null ? BadRequest("Email or password are wrong!") : Ok(login);
+        }
+        [HttpPost("refresh")]
+        public async Task<ActionResult<LoginResponseUserDto?>> RefreshLogin(RefreshLoginDto refreshDto)
+        {
+            HttpContext.Request.Cookies.TryGetValue("refreshToken", out string? refreshToken);
+            refreshDto.RefreshToken = refreshToken;
+            LoginResponseUserDto? responseDto = await _userService.RefreshLogin(refreshDto, HttpContext);
+            return responseDto == null ? Unauthorized("Invalid refresh token") : responseDto;
+        }
+
+        [Authorize(Roles ="Admin")]
+        [HttpGet("admin")]
+        public ActionResult CheckAdmin()
+        {
+            return Ok();
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult<GetUserResponseDto>> PutUser(long id, UpdateUserRequestDto userDto)
         {
@@ -51,6 +76,8 @@ namespace CardCollector_backend.Controllers
             GetUserResponseDto user = await _userService.AddUser(userDto);
             return user;
         }
+
+        [Authorize(Roles ="Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(long id)
         {
@@ -73,6 +100,7 @@ namespace CardCollector_backend.Controllers
             return userCard == null ? NotFound() : NoContent();
         }
 
+        [Authorize]
         [HttpPost("{id}/Packs/{packId}")]
         public async Task<ActionResult<IEnumerable<GetUserCardResponseDto>?>> OpenPack(long id, long packId)
         {

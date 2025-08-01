@@ -8,6 +8,9 @@ using CardCollector_backend.Services;
 using CardCollector_backend.Repositories.Interfaces;
 using CardCollector_backend.Repositories;
 using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -20,7 +23,8 @@ builder.Services.AddCors(opt =>
     {
         policyBuilder.AllowAnyHeader()
             .AllowAnyMethod()
-            .WithOrigins("http://localhost:5173");
+            .WithOrigins("http://localhost:5173")
+            .AllowCredentials();
     });
 });
 
@@ -45,6 +49,24 @@ builder.Services.AddScoped<IUserCardRepository, UserCardRepository>();
 builder.Services.AddScoped<IUserCardService, UserCardService>();
 builder.Services.AddScoped<IPackRepository, PackRepository>();
 builder.Services.AddScoped<IPackService, PackService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer( options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["AppSettings:Issuer"],
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["AppSettings:Audience"],
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            builder.Configuration["AppSettings:Token"]!
+        ))
+    };
+});
 
 var app = builder.Build();
 

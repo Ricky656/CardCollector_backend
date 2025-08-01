@@ -1,7 +1,7 @@
 
 using CardCollector_backend.Dtos.Packs;
 
-namespace CardCollector_backend.Services;
+namespace CardCollector_backend.Services.Interfaces;
 
 public interface IPackService
 {
