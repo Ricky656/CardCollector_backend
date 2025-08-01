@@ -23,14 +23,18 @@ However many endpoints require authorization via JWTs, this is currently not pro
 
 Install .NET 9.0 SDK
 
+Clone this repository to your desired location
+
 *(Optional)* Install dotnet-ef to use Entity Framework CLI commands: `dotnet tool install --global dotnet-ef`
 
 Install local development certificate: `dotnet dev-certs https --trust`
 
 Run the program with `dotnet run`, this will automatically install dependencies, create the database, and run the seeds found in Data/Seeder.cs. The database can also be found in the Data folder once created. 
 
+By default this program will run at https://localhost:7155, this can be modified in the Properties/launchSettings.json file.
+
 The Seeder file will add some basic dummy data to demonstrate functionality, as well as two Users - one with the Admin role. You can find/modify the example login details in the Data/Seeder.cs file and use them to login to the CardCollector_frontend when both apps are running. 
 
 Deleting the database, or running `dotnet ef database drop` (with the above optional EF CLI commands installed), and then running the program will reset the database if desired. 
 
-{adddress}/swagger for the swagger ui
+{address}/swagger for the swagger ui
