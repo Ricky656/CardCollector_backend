@@ -1,6 +1,0 @@
-@CardCollector_backend_HostAddress = http://localhost:5284
-
-GET {{CardCollector_backend_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
