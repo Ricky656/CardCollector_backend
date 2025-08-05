@@ -60,5 +60,7 @@ public class InMemoryFixture : IDisposable
 
         _context.Add(testPack);
         _context.SaveChanges();
+
+        _context.ChangeTracker.Clear();
     }
 }
