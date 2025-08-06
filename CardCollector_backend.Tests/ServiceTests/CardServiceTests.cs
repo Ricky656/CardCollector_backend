@@ -1,7 +1,7 @@
 using CardCollector_backend.Dtos.Cards;
-using CardCollector_backend.Models;
 using CardCollector_backend.Repositories;
 using CardCollector_backend.Services;
+using CardCollector_backend.Services.Interfaces;
 using CardCollector_backend.Tests.Fixtures;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Xunit;
@@ -11,7 +11,7 @@ namespace CardCollector_backend.Tests.Services;
 public class CardServiceTests : IClassFixture<InMemoryFixture>
 {
     private readonly InMemoryFixture _fixture;
-    private readonly CardService sut;
+    private readonly ICardService sut;
 
     public CardServiceTests(InMemoryFixture fixture)
     {

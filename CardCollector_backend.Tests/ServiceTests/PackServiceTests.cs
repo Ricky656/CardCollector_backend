@@ -1,7 +1,7 @@
 using CardCollector_backend.Dtos.Packs;
-using CardCollector_backend.Models;
 using CardCollector_backend.Repositories;
 using CardCollector_backend.Services;
+using CardCollector_backend.Services.Interfaces;
 using CardCollector_backend.Tests.Fixtures;
 
 namespace CardCollector_backend.Tests.Services;
@@ -9,13 +9,13 @@ namespace CardCollector_backend.Tests.Services;
 public class PackServiceTests : IClassFixture<InMemoryFixture>
 {
     private readonly InMemoryFixture _fixture;
-    private readonly PackService sut;
+    private readonly IPackService sut;
 
     public PackServiceTests(InMemoryFixture fixture)
     {
         _fixture = fixture;
 
-        sut = new(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
+        sut = new PackService(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
     }
 
 
