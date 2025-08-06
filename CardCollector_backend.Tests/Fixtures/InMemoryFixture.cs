@@ -24,7 +24,7 @@ public class InMemoryFixture : IDisposable
 
     public void CreateDatabase()
     {
-        var contextOptions = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase("TestDB").Options;
+        var contextOptions = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
         _context = new AppDbContext(contextOptions);
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
