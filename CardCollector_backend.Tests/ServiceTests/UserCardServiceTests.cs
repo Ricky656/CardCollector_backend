@@ -8,11 +8,14 @@ namespace CardCollector_backend.Tests.Services;
 
 public class UserCardServicesTests : IClassFixture<InMemoryFixture>
 {
-    InMemoryFixture _fixture;
+    private readonly InMemoryFixture _fixture;
+    private readonly UserCardService sut;
 
     public UserCardServicesTests(InMemoryFixture fixture)
     {
         _fixture = fixture;
+
+        sut = new(new UserCardRepository(_fixture._context), new CardRepository(_fixture._context));
     }
 
     [Fact]
@@ -20,7 +23,6 @@ public class UserCardServicesTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        UserCardService sut = new(new UserCardRepository(_fixture._context), new CardRepository(_fixture._context));
 
         //Act
         var result = await sut.GetUserCards(1);
@@ -36,7 +38,6 @@ public class UserCardServicesTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        UserCardService sut = new(new UserCardRepository(_fixture._context), new CardRepository(_fixture._context));
         UserCard testUserCard = new()
         {
             UserId = 1,
@@ -57,7 +58,6 @@ public class UserCardServicesTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        UserCardService sut = new(new UserCardRepository(_fixture._context), new CardRepository(_fixture._context));
 
         //Act
         await sut.DeleteUserCard(1, 1);
@@ -72,7 +72,6 @@ public class UserCardServicesTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        UserCardService sut = new(new UserCardRepository(_fixture._context), new CardRepository(_fixture._context));
         const long INVALID_ID = -1;
 
         //Act

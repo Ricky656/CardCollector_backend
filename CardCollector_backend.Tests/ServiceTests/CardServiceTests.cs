@@ -11,10 +11,13 @@ namespace CardCollector_backend.Tests.Services;
 public class CardServiceTests : IClassFixture<InMemoryFixture>
 {
     private readonly InMemoryFixture _fixture;
+    private readonly CardService sut;
 
     public CardServiceTests(InMemoryFixture fixture)
     {
         _fixture = fixture;
+
+        sut = new CardService(new CardRepository(_fixture._context));
     }
 
     [Fact]
@@ -22,7 +25,6 @@ public class CardServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        CardService sut = new(new CardRepository(_fixture._context));
 
         //Act
         var result = await sut.GetCard(1);
@@ -38,7 +40,6 @@ public class CardServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        CardService sut = new(new CardRepository(_fixture._context));
 
         //Act
         var result = await sut.GetCards();
@@ -53,7 +54,6 @@ public class CardServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        CardService sut = new(new CardRepository(_fixture._context));
 
         //Act
         await sut.DeleteCard(1);
@@ -68,7 +68,6 @@ public class CardServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        CardService sut = new(new CardRepository(_fixture._context));
 
         CreateCardRequestDto testCard = new()
         {
@@ -90,7 +89,6 @@ public class CardServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        CardService sut = new(new CardRepository(_fixture._context));
 
         UpdateCardRequestDto testCard = new()
         {
@@ -114,7 +112,6 @@ public class CardServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        CardService sut = new(new CardRepository(_fixture._context));
 
         UpdateCardRequestDto testCard = new()
         {

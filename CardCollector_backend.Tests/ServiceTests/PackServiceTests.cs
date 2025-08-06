@@ -9,10 +9,13 @@ namespace CardCollector_backend.Tests.Services;
 public class PackServiceTests : IClassFixture<InMemoryFixture>
 {
     private readonly InMemoryFixture _fixture;
+    private readonly PackService sut;
 
     public PackServiceTests(InMemoryFixture fixture)
     {
         _fixture = fixture;
+
+        sut = new(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
     }
 
 
@@ -21,7 +24,6 @@ public class PackServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        PackService sut = new(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
 
         //Act
         var result = await sut.GetPack(1);
@@ -37,7 +39,6 @@ public class PackServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        PackService sut = new(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
         CreatePackRequestDto testPack = new()
         {
             Name = "TestPack",
@@ -58,7 +59,6 @@ public class PackServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        PackService sut = new(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
 
         //Act
         await sut.DeletePack(1);
@@ -73,7 +73,6 @@ public class PackServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        PackService sut = new(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
         UpdatePackRequestDto updatedPack = new()
         {
             Id = 1,
@@ -95,7 +94,6 @@ public class PackServiceTests : IClassFixture<InMemoryFixture>
     {
         //Arrange
         _fixture.Reset();
-        PackService sut = new(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
         UpdatePackRequestDto updatedPack = new()
         {
             Id = 1,
