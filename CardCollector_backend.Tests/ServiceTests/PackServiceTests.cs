@@ -89,4 +89,25 @@ public class PackServiceTests : IClassFixture<InMemoryFixture>
         Assert.IsType<GetPackResponseDto>(result);
         Assert.Equal([], result.Cards);
     }
+
+    [Fact]
+    public async Task PackService_UpdatePackInvalid_ReturnsNull()
+    {
+        //Arrange
+        _fixture.Reset();
+        PackService sut = new(new PackRepository(_fixture._context), new CardRepository(_fixture._context));
+        UpdatePackRequestDto updatedPack = new()
+        {
+            Id = 1,
+            Name = "UpdatedPack",
+            CardIds = []
+        };
+        const long INVALID_ID = -1;
+
+        //Act
+        var result = await sut.UpdatePack(INVALID_ID, updatedPack);
+
+        //Assert
+        Assert.Null(result);
+    }
 }
