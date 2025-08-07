@@ -31,7 +31,7 @@ Clone this repository to your desired location
 
 Install local development certificate: `dotnet dev-certs https --trust`
 
-Run the program with `dotnet run`, this will automatically install dependencies, create the database, and run the seeds found in Data/Seeder.cs. The database can also be found in the Data folder once created. 
+Ensure you are in the "CardCollector_backend" directory; run the program with `dotnet run`, this will automatically install dependencies, create the database, and run the seeds found in Data/Seeder.cs. The database can also be found in the Data folder once created. 
 
 By default this program will run at https://localhost:7155, this can be modified in the Properties/launchSettings.json file.
 
@@ -39,4 +39,10 @@ The Seeder file will add some basic dummy data to demonstrate functionality, as 
 
 Deleting the database, or running `dotnet ef database drop` (with the above optional EF CLI commands installed), and then running the program will reset the database if desired. 
 
-{address}/swagger for the swagger ui
+{adddress}/swagger for the swagger ui
+
+## Unit Tests
+
+There is a suite of unit tests in the CardCollector_backend.Tests directory, you can run these tests by ensuring you are in the directory and using `dotnet run` or `dotnet test`
+
+

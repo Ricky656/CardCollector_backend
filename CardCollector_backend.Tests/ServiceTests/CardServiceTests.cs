@@ -1,0 +1,130 @@
+using CardCollector_backend.Dtos.Cards;
+using CardCollector_backend.Repositories;
+using CardCollector_backend.Services;
+using CardCollector_backend.Services.Interfaces;
+using CardCollector_backend.Tests.Fixtures;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Xunit;
+
+namespace CardCollector_backend.Tests.Services;
+
+public class CardServiceTests : IClassFixture<InMemoryFixture>
+{
+    private readonly InMemoryFixture _fixture;
+    private readonly ICardService sut;
+
+    public CardServiceTests(InMemoryFixture fixture)
+    {
+        _fixture = fixture;
+
+        sut = new CardService(new CardRepository(_fixture._context));
+    }
+
+    [Fact]
+    public async Task CardService_GetCard_ReturnsCard()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        //Act
+        var result = await sut.GetCard(1);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<GetCardResponseDto>(result);
+
+    }
+
+    [Fact]
+    public async Task CardService_GetAllCards_ReturnsCardCollection()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        //Act
+        var result = await sut.GetCards();
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<IEnumerable<GetCardResponseDto>>(result, exactMatch: false);
+    }
+
+    [Fact]
+    public async Task CardService_DeleteCard_ReturnsNull()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        //Act
+        await sut.DeleteCard(1);
+        var result = await sut.GetCard(1);
+
+        //Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task CardService_AddCard_ReturnsCard()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        CreateCardRequestDto testCard = new()
+        {
+            Name = "TestCard",
+            Rarity = Enums.CardRarity.Common
+        };
+        //Act
+        var result = await sut.AddCard(testCard);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<GetCardResponseDto>(result);
+        Assert.Equal(testCard.Name, result.Name);
+
+    }
+
+    [Fact]
+    public async Task CardService_UpdateCard_ReturnsCard()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        UpdateCardRequestDto testCard = new()
+        {
+            Id = 1,
+            Name = "UpdatedCard",
+            Rarity = Enums.CardRarity.Uncommon
+        };
+
+        //Act
+        var result = await sut.UpdateCard(testCard.Id, testCard);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<GetCardResponseDto>(result);
+        Assert.Equal(testCard.Name, result.Name);
+        Assert.Equal(testCard.Rarity, result.Rarity);
+    }
+
+    [Fact]
+    public async Task CardService_UpdateCardInvalid_ReturnsNull()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        UpdateCardRequestDto testCard = new()
+        {
+            Id = 1,
+            Name = "UpdatedCard",
+            Rarity = Enums.CardRarity.Uncommon
+        };
+        const long INVALID_ID = -1;
+
+        //Act
+        var result = await sut.UpdateCard(INVALID_ID, testCard);
+
+        //Assert
+        Assert.Null(result);
+    }
+}
