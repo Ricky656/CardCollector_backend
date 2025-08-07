@@ -43,6 +43,6 @@ Deleting the database, or running `dotnet ef database drop` (with the above opti
 
 ## Unit Tests
 
-There is a suite of unit tests in the CardCollector_backend.Tests directory, you can run these tests by ensuring you are in the directory and using `dotnet run` or `dotnet test`
+Manually run tests with `dotnet test` in the root directory
 
 
