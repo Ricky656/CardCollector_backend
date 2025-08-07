@@ -6,7 +6,7 @@ using CardCollector_backend.Repositories;
 using Microsoft.AspNetCore.Http;
 using CardCollector_backend.Dtos.Users;
 using CardCollector_backend.Models;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using CardCollector_backend.Dtos.UserCards;
 
 namespace CardCollector_backend.Tests.Services;
 
@@ -55,5 +55,178 @@ public class UserServiceTests : IClassFixture<InMemoryFixture>
         Assert.NotNull(result);
         Assert.IsType<LoginResponseUserDto>(result);
         Assert.Equal(testLogin.Username, result.Username);
+    }
+
+    [Fact]
+    public async Task UserService_AddUser_ReturnsUser()
+    {
+        //Arrange
+        _fixture.Reset();
+        CreateUserRequestDto testUser = new()
+        {
+            Username = "testUser",
+            Email = "testEmail",
+            Password = "password"
+        };
+
+        //Act
+        var result = await sut.AddUser(testUser);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<GetUserResponseDto>(result);
+        Assert.Equal(testUser.Username, result.Username);
+    }
+
+    [Fact]
+    public async Task UserService_DeleteUser_ReturnsNull()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        //Act
+        await sut.DeleteUser(1);
+        var result = await sut.GetUser(1);
+
+        //Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task UserService_GetUser_ReturnsUser()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        //Act
+        var result = await sut.GetUser(1);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<GetUserResponseDto>(result);
+        Assert.Equal(1, result.Id);
+    }
+
+    [Fact]
+    public async Task UserService_GetAllUsers_ReturnsUserCollection()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        //Act
+        var result = await sut.GetUsers();
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<IEnumerable<GetUserResponseDto>>(result, exactMatch: false);
+    }
+
+    [Fact]
+    public async Task UserService_GetUserCards_ReturnsUserWithCards()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        //Act
+        var result = await sut.GetUserCards(1);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.NotNull(result.UserCards);
+        Assert.IsType<IEnumerable<GetUserCardResponseDto>>(result.UserCards, exactMatch: false);
+    }
+
+    [Fact]
+    public async Task UserService_UpdateUser_ReturnsUser()
+    {
+        //Arrange
+        _fixture.Reset();
+        UpdateUserRequestDto updatedUser = new()
+        {
+            Username = "Updated Username"
+        };
+
+        //Act
+        var result = await sut.UpdateUser(1, updatedUser);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<GetUserResponseDto>(result);
+        Assert.Equal(updatedUser.Username, result.Username);
+    }
+
+    [Fact]
+    public async Task UserService_UpdateUserInvalid_ReturnsNull()
+    {
+        //Arrange
+        _fixture.Reset();
+        UpdateUserRequestDto updatedUser = new()
+        {
+            Username = "Updated Username"
+        };
+
+        //Act
+        var result = await sut.UpdateUser(-1, updatedUser);
+
+        //Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task UserService_AddUserCard_ReturnsUserCard()
+    {
+        //Arrange
+        _fixture.Reset();
+        CreateUserCardRequestDto testUserCard = new()
+        {
+            UserId = 1,
+            CardId = 1
+        };
+        A.CallTo(() => _userCardService.AddUserCard(A<UserCard>._)).ReturnsLazily((UserCard card) => new GetUserCardResponseDto()
+        {
+            Id = card.Id,
+            CardId = card.CardId,
+            UserId = card.UserId
+        });
+
+        //Act
+        var result = await sut.AddUserCard(testUserCard);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.Equal(testUserCard.UserId, result.UserId);
+        Assert.Equal(testUserCard.CardId, result.CardId);
+    }
+
+    [Fact]
+    public async Task UserService_DeleteUserCard_ReturnsEmptyCollection()
+    {
+        //Arrange
+        _fixture.Reset();
+
+        //Act
+        await sut.DeleteUserCard(1, 1);
+        var result = await sut.GetUserCards(1);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<GetUserResponseDto>(result);
+        Assert.Empty(result.UserCards);
+    }
+
+    [Fact]
+    public async Task UserService_OpenPack_ReturnsCards()
+    {
+        //Arrange
+        _fixture.Reset();
+        const int CARDS_PER_PACK = 3; //Move to ENV variable? 
+
+        //Act
+        var result = await sut.OpenPack(1, 1); 
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<IEnumerable<GetUserCardResponseDto>>(result, exactMatch: false);
+        Assert.Equal(CARDS_PER_PACK, result.Count());
     }
 }
