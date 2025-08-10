@@ -11,9 +11,10 @@ variables:
 jobs:
   - job: Test_and_Build
     steps:
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
         inputs:
-          restoreSolution: '$(solution)'
+          command: restore
+          projects: $(solution)
 
       - task: VSBuild@1
         inputs:
