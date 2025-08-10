@@ -6,7 +6,7 @@ pool: local
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Development'
+  buildConfiguration: 'Release'
 
 jobs:
   - job: Test_and_Build
