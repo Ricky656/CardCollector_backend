@@ -11,12 +11,18 @@ variables:
 jobs:
   - job: Test_and_Build
     steps:
+      - task: UseDotNet@2
+        displayName: 'Select NET SDK version'
+        inputs:
+          version: 9.0.x
       - task: DotNetCoreCLI@2
+        displayName: 'Restore Solution'
         inputs:
           command: restore
           projects: $(solution)
 
       - task: VSBuild@1
+        displayName: 'Build Artifact'
         inputs:
           solution: '$(solution)'
           msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
@@ -24,6 +30,7 @@ jobs:
           configuration: '$(buildConfiguration)'
 
       - task: VSTest@2
+        displayName: 'Run Unit Tests'
         inputs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
