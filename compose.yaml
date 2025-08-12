@@ -1,0 +1,11 @@
+
+services:
+  card-collector-backend:
+    image: e63892f887aa
+    ports:
+      - 7155:7155
+    environment: 
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet\https:/https/
